@@ -22,7 +22,7 @@
  *    'Sun, 17 May 1998 03:00:00 GMT+01' => Date()
  */
 function parseDataFromRfc2822(value) {
-   throw new Error('Not implemented');
+   return new Date(value);
 }
 
 /**
@@ -37,7 +37,7 @@ function parseDataFromRfc2822(value) {
  *    '2016-01-19T08:07:37Z' => Date()
  */
 function parseDataFromIso8601(value) {
-   throw new Error('Not implemented');
+   return new Date(value);
 }
 
 
@@ -56,7 +56,15 @@ function parseDataFromIso8601(value) {
  *    Date(2015,1,1)    => false
  */
 function isLeapYear(date) {
-   throw new Error('Not implemented');
+  
+   let year = date.getFullYear();
+   
+   if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0) {
+      return true
+   } else {
+      return false
+   };
+   
 }
 
 
@@ -76,8 +84,34 @@ function isLeapYear(date) {
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,15,20,10,453)   => "05:20:10.453"
  */
 function timeSpanToString(startDate, endDate) {
-   throw new Error('Not implemented');
-}
+   
+   let diff = endDate - startDate;
+
+   let ms = diff % 1000; 
+
+   diff -= ms;
+
+   let sec = diff % (1000 * 60)
+
+   diff -= sec;
+   sec /= 1000;
+
+   let min = diff % (1000 * 60 * 60)
+
+   diff -= min;
+   min /= 1000*60;
+
+   let hours = diff / (1000 * 60 * 60)
+
+   let temp = "";
+
+   if (hours < 10) {temp = temp+"0"+hours+":"} else {temp = temp + hours+":"};
+   if (min < 10) {temp = temp+"0"+min+":"} else {temp = temp + min+":"};
+   if (sec < 10) {temp = temp+"0"+sec+"."} else {temp = temp + sec+"."};
+   if (ms < 100 && ms > 10) {temp = temp+"0"+ms} else if (ms < 10) {temp = temp+"00"+ms} else {temp = temp + ms};
+   
+   return temp;    
+}     
 
 
 /**
@@ -94,8 +128,25 @@ function timeSpanToString(startDate, endDate) {
  *    Date.UTC(2016,3,5,21, 0) => Math.PI/2
  */
 function angleBetweenClockHands(date) {
-    throw new Error('Not implemented');
-}
+
+   let hours = date.getUTCHours();
+   
+   let min = date.getUTCMinutes();
+   
+   if (hours > 12) { hours -=12};
+
+   let degMin = min*360/60;
+
+   let degHrs = hours*360/12 + 360/12*min/60;
+
+   let diff =  Math.abs(degHrs-degMin)
+
+   if (diff > 180) {
+      return (360 -  diff) / 180*Math.PI
+   } else {
+      return diff / 180*Math.PI };
+
+};
 
 
 module.exports = {
